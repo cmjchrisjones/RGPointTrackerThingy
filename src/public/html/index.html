@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortnite Points Tracker</title>
+    <link rel="stylesheet" href="./public/style/style.css" />
+</head>
+
+<body>
+    <div id="wasted" class="msg">
+        <img src='./public/img/wasted.png' alt="Wasted Text in the form of the GTA game" />
+    </div>
+    <span id="remainingPlayers">2</span>
+    <span id="score">0</span>
+    <br />
+    <button id="hit">+1</button>
+    <button id="eliminate">Eliminate</button>
+
+    <!-- <input id="score" name="score" type="text" placeholder="score" /> -->
+    <input type="submit" value="save" />
+
+
+    <script>
+        const numberOfPlayers = document.getElementById('remainingPlayers');
+        const currentScore = document.getElementById('score');
+
+        const hit = document.getElementById('hit');
+        const eliminated = document.getElementById('eliminate');
+
+        hit.addEventListener('click', () => {
+            const currentGameState = {
+                numberOfPlayers: parseInt(numberOfPlayers.innerHTML),
+                currentScore: parseInt(currentScore.innerHTML)
+            };
+
+            const options = {
+                method: 'POST',
+                body: JSON.stringify(currentGameState),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            console.log(currentGameState);
+
+            fetch('http://localhost:3000/addHit', options)
+                .then(res => res.json())
+                .then(res => {
+                    console.log(res)
+                    numberOfPlayers.innerHTML = res.Players;
+                    currentScore.innerHTML = res.Score;
+                });
+        })
+
+        eliminated.addEventListener('click', () => {
+            const soundEffect = new Audio('./public/media/wasted-sound-effect.mp3');
+            soundEffect.play();
+            soundEffect.loop = false;
+            const wastedEl = document.getElementById('wasted');
+            wastedEl.classList.add('msgShow');
+        })
+    </script>
+</body>
+
+</html>
