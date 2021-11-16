@@ -6,29 +6,59 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fortnite Points Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="./public/style/style.css" />
 </head>
 
 <body>
+    <div class="container-fluid">
+        <div class="col-auto me-auto offset-1 col-md-10">
+            <div id="score" class="col">
+                0
+            </div>
+            <div class="progress">
+                <div id="prog1" class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="0"
+                    aria-valuemin="0" aria-valuemax="100"></div>
+                <div id="prog2" class="progress-bar bg-info progress-bar-striped" role="progressbar" aria-valuenow="0"
+                    aria-valuemin="0" aria-valuemax="100"></div>
+                <div id="prog3" class="progress-bar bg-success progress-bar-striped" role="progressbar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <div id="remainingPlayers" class="col">
+                100
+            </div>
+        </div>
+
+        <div class="row justify-content-around">
+            <div id="hit" class="col-5 interactive hit">
+                + 1
+            </div>
+            <div id="eliminated" class="col-5 interactive eliminated">
+                Eliminated
+            </div>
+        </div>
+    </div>
+
     <div id="wasted" class="msg">
         <img src='./public/img/wasted.png' alt="Wasted Text in the form of the GTA game" />
     </div>
-    <span id="remainingPlayers">2</span>
-    <span id="score">0</span>
+
     <br />
-    <button id="hit">+1</button>
-    <button id="eliminate">Eliminate</button>
+
 
     <!-- <input id="score" name="score" type="text" placeholder="score" /> -->
     <input type="submit" value="save" />
 
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
     <script>
         const numberOfPlayers = document.getElementById('remainingPlayers');
         const currentScore = document.getElementById('score');
 
         const hit = document.getElementById('hit');
-        const eliminated = document.getElementById('eliminate');
+        const eliminated = document.getElementById('eliminated');
 
         hit.addEventListener('click', () => {
             const currentGameState = {
@@ -45,15 +75,37 @@
             };
 
             console.log(currentGameState);
-
+            let score;
             fetch('http://localhost:3000/addHit', options)
                 .then(res => res.json())
                 .then(res => {
                     console.log(res)
                     numberOfPlayers.innerHTML = res.Players;
                     currentScore.innerHTML = res.Score;
+                    score = res.score;
+                    calculateAndUpdateProgress(numberOfPlayers.innerHTML, res.score);
                 });
+
         })
+
+        function calculateAndUpdateProgress(numberOfPlayers, score) {
+            let prog1 = document.getElementById("prog1");
+            let prog2 = document.getElementById("prog2");
+            let prog3 = document.getElementById("prog3");
+
+            let progress = ((100 - numberOfPlayers) * 100) / 100;
+
+            if (progress >= 0 && progress <= 60) {
+                prog1.style = `width: ${progress}%;`;
+            } else if (progress <= 90) {
+                prog2.style = `width: ${progress - 60}%;`;
+            }
+            else {
+                prog3.style = `width: ${progress - 89}%;`;
+            }
+  
+            console.log("% complete: " + progress + " and score " + score);
+        }
 
         eliminated.addEventListener('click', () => {
             const soundEffect = new Audio('./public/media/wasted-sound-effect.mp3');

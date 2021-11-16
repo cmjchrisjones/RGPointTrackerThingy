@@ -1,25 +1,21 @@
-.container{
-    position: relative;
-    height: 200px;
-    width: 400px;
-    border: solid 1px #222;
-  
+.interactive {
+  min-height: 75vh !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5em;
+  font-weight: 900;
+  color: white;
 }
 
-.msg{
-    position: absolute;
-    top: 0;
-    background-color: #FEEFB3;
-    height: 0;
-    width: 100%;
-    overflow: hidden;
-    -webkit-transition: height 0.8s linear;
-    -moz-transition: height 0.8s linear;
-    -o-transition: height 0.8s linear;
-    -ms-transition: height 0.8s linear;
-    transition: height 0.8s linear;    
+.hit {
+  background-color: green;
 }
 
-.msgShow{
-    height: 100%;
+.eliminated {
+  background-color: red;
+}
+
+.progress {
+  height: 100px;
 }
